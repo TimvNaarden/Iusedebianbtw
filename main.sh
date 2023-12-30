@@ -2,15 +2,15 @@
 
 function install_discord()
 {
-    apt install curl
+    apt install -y curl
     curl -L "https://discord.com/api/download?platform=linux&format=deb" -o discord.deb
-    apt install ./discord.deb
+    apt install -y ./discord.deb
     rm discord.deb
 }
 
 function install_dolphin()
 {
-    apt install dolphin
+    apt install -y dolphin
 }
 
 function install_pavucontrol()
@@ -25,7 +25,7 @@ function install_pulseaudio()
 
 function install_firefox()
 {
-    apt install wget tar
+    apt install -y wget tar
     wget -O firefox.tar.bz2 "https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=en-US"
     tar xjf firefox.tar.bz2 -C /opt/
     ln -s /opt/firefox/firefox /usr/local/bin/firefox
@@ -43,6 +43,7 @@ unzip ~/.fonts/JetBrainsMono.zip
 
 function install_neovim()
 {
+
     apt install -y wget tar make gcc cmake gettext unzip
     version="0.9.4"
     wget "https://github.com/neovim/neovim/archive/refs/tags/v$version.tar.gz" -o neovim.tar.gz
@@ -104,26 +105,24 @@ function install_networkmanager()
     apt purge -y dhclient isc-dhcp-client isc-dhcp-common 
     apt install -y network-manager wpa_supplicant
     rm /etc/wpa_supplicant.conf
-    echo """
-        [Unit]
-        Description=WPA supplicant
-        After=dbus.service
-        IgnoreOnIsolate=true
-
-        [Service]
-        Type=dbus
-        BusName=fi.w1.wpa_supplicant1
-        ExecStart=/sbin/wpa_supplicant -u -s -c /etc/wpa_supplicant/wpa_supplicant.conf -i wlo1
-        Restart=always
-        ExecReload=/bin/kill -HUP $MAINPID
-        Group=netdev
-        RuntimeDirectory=wpa_supplicant
-        RuntimeDirectoryMode=0750
-
-        [Install]
-        WantedBy=multi-user.target
-        Alias=dbus-fi.w1.wpa_supplicant1.service
-    """ >> /etc/wpa_supplicant.conf
+    echo "[Unit]" >> /etc/wpa_supplicant.conf
+    echo "Description=WPA supplicant" >> /etc/wpa_supplicant.conf
+    echo "After=dbus.service" >> /etc/wpa_supplicant.conf
+    echo "IgnoreOnIsolate=true" >> /etc/wpa_supplicant.conf
+    echo "" >> /etc/wpa_supplicant.conf
+    echo "[Service]" >> /etc/wpa_supplicant.conf
+    echo "Type=dbus" >> /etc/wpa_supplicant.conf
+    echo "BusName=fi.w1.wpa_supplicant1" >> /etc/wpa_supplicant.conf
+    echo "ExecStart=/sbin/wpa_supplicant -u -s -c /etc/wpa_supplicant/wpa_supplicant.conf -i wlo1" >> /etc/wpa_supplicant.conf
+    echo "Restart=always" >> /etc/wpa_supplicant.conf
+    echo "ExecReload=/bin/kill -HUP $MAINPID" >> /etc/wpa_supplicant.conf
+    echo "Group=netdev" >> /etc/wpa_supplicant.conf
+    echo "RuntimeDirectory=wpa_supplicant" >> /etc/wpa_supplicant.conf
+    echo "RuntimeDirectoryMode=0750" >> /etc/wpa_supplicant.conf
+    echo "" >> /etc/wpa_supplicant.conf
+    echo "[Install]" >> /etc/wpa_supplicant.conf
+    echo "WantedBy=multi-user.target" >> /etc/wpa_supplicant.conf
+    echo "Alias=dbus-fi.w1.wpa_supplicant1.service" >> /etc/wpa_supplicant.conf
 }
 function install_qbittorrent()
 {
@@ -139,7 +138,7 @@ function install_steam()
 
 function install_spotify()
 {
-    apt install -y curl
+    apt install -y curl libssl1.1
     curl -sS https://download.spotify.com/debian/pubkey_0D811D58.gpg | apt-key add - 
     echo "deb http://repository.spotify.com stable non-free" | tee /etc/apt/sources.list.d/spotify.list
     apt update
@@ -149,26 +148,13 @@ function install_spotify()
 function update_sources() 
 {
     rm /etc/apt/sources.list
-    echo """
-        # deb cdrom:[Debian GNU/Linux 12.2.0 _Bookworm_ - Official amd64 NETINST with firmware 20231007-10:28]/ bookworm main non-free-firmware
-
-        deb http://debian.snt.utwente.nl/debian/ bookworm main non-free non-free-firmware contrib
-        deb-src http://debian.snt.utwente.nl/debian/ bookworm main non-free non-free-firmware contrib
-
-        deb http://security.debian.org/debian-security/ bookworm-security main non-free contrib
-        deb-src http://security.debian.org/debian-security/ bookworm-security main non-free non-free-firmware contrib
-
-        # bookworm-updates, to get updates before a point release is made;
-        # see https://www.debian.org/doc/manuals/debian-reference/ch02.en.html#_updates_and_backports
-        deb http://debian.snt.utwente.nl/debian/ bookworm-updates main non-free non-free-firmware non-free-firmware contrib
-        deb-src http://debian.snt.utwente.nl/debian/ bookworm-updates main non-free non-free-firmware non-free-firmware contrib
-
-        # This system was installed using small removable media
-        # (e.g., netinst, live or single CD). The matching "deb cdrom"
-        # entries were disabled at the end of the installation process.
-        # For information about how to configure apt package sources,
-        # see the sources.list(5) manual.
-    """ >> /etc/apt/sources.list
+    echo "#deb cdrom:[Debian GNU/Linux 12.2.0 _Bookworm_ - Official amd64 NETINST with firmware 20231007-10:28]/ bookworm main non-free-firmware" >> /etc/apt/sources.list
+    echo "deb http://debian.snt.utwente.nl/debian/ bookworm main non-free non-free-firmware contrib" >> /etc/apt/sources.list
+    echo "deb-src http://debian.snt.utwente.nl/debian/ bookworm main non-free non-free-firmware contrib" >> /etc/apt/sources.list
+    echo "deb http://security.debian.org/debian-security/ bookworm-security main non-free contrib" >> /etc/apt/sources.list
+    echo "deb-src http://security.debian.org/debian-security/ bookworm-security main non-free contrib" >> /etc/apt/sources.list
+    echo "deb http://debian.snt.utwente.nl/debian/ bookworm-updates main non-free non-free-firmware non-free-firmware contrib" >> /etc/apt/sources.list
+    echo "deb-src http://debian.snt.utwente.nl/debian/ bookworm-updates main non-free non-free-firmware non-free-firmware contrib" >> /etc/apt/sources.list
     apt update
 }
 
@@ -194,6 +180,11 @@ function install_ms-electron-365()
     rm ms-electron-365.deb
 }
 
+function fix_path()
+{
+    echo "export PATH=$PATH:/usr/local/sbin:/sbin" >> ~/.profile
+}
+
 git clone "https://github.com/pedro-hs/checkbox.sh" checkbox
 
 checkbox_options="
@@ -213,7 +204,11 @@ checkbox_options="
 +Network Manager
 +qBittorrent
 +Steam
-+Spotify"
++Spotify
++Nvidia
++MS-365-Electron
++fix_path
++Update Sources"
 
 
 source checkbox/checkbox.sh --multiple --index --options="$checkbox_options"
@@ -236,7 +231,11 @@ Thunderbird
 Network Manager
 qBittorrent
 Steam
-Spotify"
+Spotify
+Nvidia
+MS-365-Electron
+fix_path
+Update Sources"
 
 IFS=$' ' read -ra index_array <<< $(echo "$checkbox_output")
 mapfile -t item_array <<< "$options"
@@ -264,6 +263,8 @@ for index in "${index_array[@]}"; do
     "Spotify")                  install_spotify;;
     "Nvidia")                   install_nvidia;;
     "MS-365-Electron")          install_ms-electron-365;;
+    "fix_path")                 fix_path;;
+    
     *)
         echo "No installation found for ${item_array[$index]}"
         ;;
