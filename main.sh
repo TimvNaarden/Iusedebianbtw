@@ -113,7 +113,7 @@ function install_thunderbird()
 function install_networkmanager()
 {
     apt purge -y dhclient isc-dhcp-client isc-dhcp-common 
-    apt install -y network-manager wpa_supplicant
+    apt install -y network-manager wpasupplicant network-manager-l2tp
     rm /etc/wpa_supplicant.conf
     echo "[Unit]" >> /etc/wpa_supplicant.conf
     echo "Description=WPA supplicant" >> /etc/wpa_supplicant.conf
@@ -143,7 +143,7 @@ function install_steam()
 {
     dpkg --add-architecture i386
     apt update
-    apt install -y libc6:i386
+    apt install -y libc6:i386 libg1:i386 libdrm2 libgl1-mesa-dri:i386
     wget -O steam.deb "https://cdn.cloudflare.steamstatic.com/client/installer/steam.deb"
     apt install -y ./steam.deb
     rm steam.deb
@@ -182,7 +182,7 @@ function install_ytop()
 
 function install_nvidia()
 {
-    apt install -y nvidia-driver
+    apt install -y nvidia-driver mokutil
     openssl req -new -x509 -newkey rsa:2048 -keyout NVIDIA.priv -outform DER -out NVIDIA.der -nodes -days 36500 -subj "/CN=NVIDIA/"
     /usr/src/linux-headers-$(uname -r)/scripts/sign-file sha256 ./NVIDIA.priv ./NVIDIA.der $(modinfo -n nvidia-current)
     /usr/src/linux-headers-$(uname -r)/scripts/sign-file sha256 ./NVIDIA.priv ./NVIDIA.der $(modinfo -n nvidia-current-drm)
@@ -196,7 +196,7 @@ function install_nvidia()
 function install_ms-electron-365()
 {
     apt install -y wget tar
-    wget "https://github.com/agam778/MS-365-Electron/releases/download/v1.1.0/MS-365-Electron-v1.1.0-linux-amd64.deb" -o ms-electron-365.deb
+    wget "https://github.com/agam778/MS-365-Electron/releases/download/v1.1.0/MS-365-Electron-v1.1.0-linux-amd64.deb" -O ms-electron-365.deb
     apt install -y ./ms-electron-365.deb
     rm ms-electron-365.deb
 }
@@ -208,7 +208,7 @@ function fix_path()
 function install_vscode()
 {
     apt install -y wget tar
-    wget "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64" -o vscode.deb
+    wget "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64" -O vscode.deb
     apt install -y ./vscode.deb
     rm vscode.deb
 }
