@@ -82,7 +82,7 @@ function install_st()
 
 function install_chadwm()
 {
-    apt install -y git make gcc picom rofi feh acpi libimlib2 xbacklight xorg xserver-xorg xinit libimlib2-dev libxinerama-dev
+    apt install -y git make gcc picom rofi feh acpi libimlib2 xbacklight xorg xserver-xorg xinit libimlib2-dev libxinerama-dev xtrlock xclip
     git clone "https://github.com/timvnaarden/chadwm" --depth 1 ~/.config/chadwm
     cd ~/.config/chadwm/chadwm
     make install
@@ -211,6 +211,31 @@ function install_vscode()
     wget "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64" -O vscode.deb
     apt install -y ./vscode.deb
     rm vscode.deb
+}
+
+function install whatsapp()
+{
+    apt install -y wget tar
+    wget "https://github.com/eneshecan/whatsapp-for-linux/releases/download/v1.6.4/whatsapp-for-linux_1.6.4_amd64.deb" -O whatsapp.deb
+    apt install -y ./whatsapp.deb
+    rm whatsapp.deb
+}
+
+function install_vmware()
+{
+    apt install -y wget tar
+    wget "https://www.vmware.com/go/getworkstation-linux"-O vmware.bundle
+    chmod +x vmware.bundle
+    ./vmware.bundle
+    rm vmware.bundle
+    
+    apt install -y mokutil
+    openssl req -new -x509 -newkey rsa:2048 -keyout VMWARE.priv -outform DER -out VMWARE.der -nodes -days 36500 -subj "/CN=VMWARE/"
+    /usr/src/linux-headers-$(uname -r)/scripts/sign-file sha256 ./NVIDIA.priv ./NVIDIA.der $(modinfo -n vmw_vmci)
+    /usr/src/linux-headers-$(uname -r)/scripts/sign-file sha256 ./NVIDIA.priv ./NVIDIA.der $(modinfo -n vmnet)
+    /usr/src/linux-headers-$(uname -r)/scripts/sign-file sha256 ./NVIDIA.priv ./NVIDIA.der $(modinfo -n vmmon)
+    mokutil --import VMWARE.der
+    rm VMWARE.priv VMWARE.der
 }
 
 
