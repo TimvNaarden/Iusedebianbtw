@@ -8,9 +8,9 @@ function install_discord()
     rm discord.deb
 }
 
-function install_dolphin()
+function install_nautilus()
 {
-    apt install -y dolphin
+    apt install -y nautilus
 }
 
 function install_zsh()
@@ -44,9 +44,11 @@ function install_jetbrainsmononerdfont()
 {
     apt install -y wget unzip
     mkdir ~/.fonts
-    wget "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip" -o ~/.fonts/JetBrainsMono.zip
-    unzip ~/.fonts/JetBrainsMono.zip
-    rm ~/.fonts/JetBrainsMono.zip
+    wget "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip" -O ~/.fonts/JetBrainsMono.zip
+    cd ~/.fonts
+    unzip JetBrainsMono.zip
+    rm JetBrainsMono.zip
+    cd -
 }
 
 function install_neovim()
@@ -80,7 +82,7 @@ function install_st()
 
 function install_chadwm()
 {
-    apt install -y git make gcc picom rofi feh acpi libimlib2 xbacklight xorg xserver-xorg xinit 
+    apt install -y git make gcc picom rofi feh acpi libimlib2 xbacklight xorg xserver-xorg xinit libimlib2-dev libxinerama-dev
     git clone "https://github.com/timvnaarden/chadwm" --depth 1 ~/.config/chadwm
     cd ~/.config/chadwm/chadwm
     make install
@@ -139,6 +141,9 @@ function install_qbittorrent()
 
 function install_steam() 
 {
+    dpkg --add-architecture i386
+    apt update
+    apt install -y libc6:i386
     wget -O steam.deb "https://cdn.cloudflare.steamstatic.com/client/installer/steam.deb"
     apt install -y ./steam.deb
     rm steam.deb
@@ -164,6 +169,14 @@ function update_sources()
     echo "deb http://debian.snt.utwente.nl/debian/ bookworm-updates main non-free non-free-firmware non-free-firmware contrib" >> /etc/apt/sources.list
     echo "deb-src http://debian.snt.utwente.nl/debian/ bookworm-updates main non-free non-free-firmware non-free-firmware contrib" >> /etc/apt/sources.list
     apt update
+}
+
+function install_ytop()
+{
+    apt install -y wget tar cargo
+    cargo install ytop
+    export PATH=$PATH:~/.cargo/bin >> ~/.profile
+
 }
 
 
@@ -192,6 +205,13 @@ function fix_path()
 {
     echo "export PATH=$PATH:/usr/local/sbin:/sbin" >> ~/.profile
 }
+function install_vscode()
+{
+    apt install -y wget tar
+    wget "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64" -o vscode.deb
+    apt install -y ./vscode.deb
+    rm vscode.deb
+}
 
 
 fix_path
@@ -202,7 +222,7 @@ git clone "https://github.com/pedro-hs/checkbox.sh" checkbox
 
 checkbox_options="
 +Discord
-+Dolphin
++Nautilus
 +Pavu Control
 +Pulse Audio
 +Firefox
@@ -220,6 +240,7 @@ checkbox_options="
 +Spotify
 +Nvidia
 +MS-365-Electron
++VSCode
 "
 
 
@@ -228,7 +249,7 @@ clear
 
 options="
 Discord
-Dolphin
+Nautilus
 Pavu Control
 Pulse Audio
 Firefox
@@ -254,7 +275,7 @@ for index in "${index_array[@]}"; do
   echo "Installing ${item_array[$index]}"
   case "${item_array[$index]}" in
     "Discord")                  install_discord;;
-    "Dolphin")                  install_dolphin;;
+    "Nautilus")                 install_nautilus;;
     "Pavu Control")             install_pavucontrol;;
     "Pulse Audio")              install_pulseaudio;;
     "Firefox")                  install_firefox;;
@@ -272,6 +293,7 @@ for index in "${index_array[@]}"; do
     "Spotify")                  install_spotify;;
     "Nvidia")                   install_nvidia;;
     "MS-365-Electron")          install_ms-electron-365;;
+    "VSCode")                   install_vscode;;
 
     *)
         echo "No installation found for ${item_array[$index]}"
@@ -281,4 +303,5 @@ esac
 apt autoremove -y
 apt autoclean -y
 apt update -y
+apt purge xdg-desktop-portal-gtk -y
 done
