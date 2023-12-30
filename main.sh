@@ -35,10 +35,10 @@ function install_firefox()
 
 function install_jetbrainsmononerdfont()
 {
-apt install -y wget unzip
-mkdir ~/.fonts
-wget "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip" -o ~/.fonts/JetBrainsMono.zip
-unzip ~/.fonts/JetBrainsMono.zip
+    apt install -y wget unzip
+    mkdir ~/.fonts
+    wget "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip" -o ~/.fonts/JetBrainsMono.zip
+    unzip ~/.fonts/JetBrainsMono.zip
 }
 
 function install_neovim()
@@ -72,7 +72,7 @@ function install_st()
 
 function install_chadwm()
 {
-    apt install -y git make gcc picom rofi feh acpi libimlib2
+    apt install -y git make gcc picom rofi feh acpi libimlib2 xbacklight xorg xserver-xorg xinit 
     git clone "https://github.com/timvnaarden/chadwm" --depth 1 ~/.config/chadwm
     cd ~/.config/chadwm/chadwm
     make install
@@ -264,7 +264,7 @@ for index in "${index_array[@]}"; do
     "Nvidia")                   install_nvidia;;
     "MS-365-Electron")          install_ms-electron-365;;
     "fix_path")                 fix_path;;
-    
+
     *)
         echo "No installation found for ${item_array[$index]}"
         ;;
