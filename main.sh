@@ -13,6 +13,13 @@ function install_dolphin()
     apt install -y dolphin
 }
 
+function install_zsh()
+{
+  sudo apt install zsh zsh-autosuggestions zsh-syntax-highlighting
+  sh -c "$(wget https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh -O -)"
+
+}
+
 function install_pavucontrol()
 {
     apt install -y pavucontrol
@@ -39,20 +46,21 @@ function install_jetbrainsmononerdfont()
     mkdir ~/.fonts
     wget "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip" -o ~/.fonts/JetBrainsMono.zip
     unzip ~/.fonts/JetBrainsMono.zip
+    rm ~/.fonts/JetBrainsMono.zip
 }
 
 function install_neovim()
 {
-
-    apt install -y wget tar make gcc cmake gettext unzip
-    version="0.9.4"
-    wget "https://github.com/neovim/neovim/archive/refs/tags/v$version.tar.gz" -o neovim.tar.gz
-    tar -xf neovim.tar.gz
-    cd neovim-$version
-    make CMAKE_BUILD_TYPE=RelWithDebInfo
-    make install
-    cd -
-    rm -rf neovim-$version
+  sudo apt install -y curl tar make gcc cmake gettext unzip
+  version="0.9.4"
+  wget "https://github.com/neovim/neovim/archive/refs/tags/v$version.tar.gz" -O neovim.tar.gz
+  tar -xf neovim.tar.gz
+  rm neovim.tar.gz
+  cd neovim-$version
+  sudo make CMAKE_BUILD_TYPE=RelWithDebInfo
+  sudo make install
+  cd -
+  sudo rm -rf neovim-$version
 }
 
 function install_nvchad()
@@ -185,6 +193,11 @@ function fix_path()
     echo "export PATH=$PATH:/usr/local/sbin:/sbin" >> ~/.profile
 }
 
+
+fix_path
+
+update_sources
+
 git clone "https://github.com/pedro-hs/checkbox.sh" checkbox
 
 checkbox_options="
@@ -207,8 +220,7 @@ checkbox_options="
 +Spotify
 +Nvidia
 +MS-365-Electron
-+fix_path
-+Update Sources"
+"
 
 
 source checkbox/checkbox.sh --multiple --index --options="$checkbox_options"
@@ -233,9 +245,7 @@ qBittorrent
 Steam
 Spotify
 Nvidia
-MS-365-Electron
-fix_path
-Update Sources"
+MS-365-Electron"
 
 IFS=$' ' read -ra index_array <<< $(echo "$checkbox_output")
 mapfile -t item_array <<< "$options"
@@ -243,7 +253,6 @@ mapfile -t item_array <<< "$options"
 for index in "${index_array[@]}"; do
   echo "Installing ${item_array[$index]}"
   case "${item_array[$index]}" in
-    "Update Sources")           update_sources;;
     "Discord")                  install_discord;;
     "Dolphin")                  install_dolphin;;
     "Pavu Control")             install_pavucontrol;;
@@ -263,7 +272,6 @@ for index in "${index_array[@]}"; do
     "Spotify")                  install_spotify;;
     "Nvidia")                   install_nvidia;;
     "MS-365-Electron")          install_ms-electron-365;;
-    "fix_path")                 fix_path;;
 
     *)
         echo "No installation found for ${item_array[$index]}"
