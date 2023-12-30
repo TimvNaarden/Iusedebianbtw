@@ -139,7 +139,7 @@ function install_steam()
 function install_spotify()
 {
     apt install -y curl libssl1.1
-    curl -sS https://download.spotify.com/debian/pubkey_0D811D58.gpg | apt-key add - 
+    curl -sS https://download.spotify.com/debian/pubkey_7A3A762FAFD4A51F.gpg | gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
     echo "deb http://repository.spotify.com stable non-free" | tee /etc/apt/sources.list.d/spotify.list
     apt update
     apt install -y spotify-client
