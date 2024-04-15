@@ -84,7 +84,7 @@ function install_st()
 
 function install_chadwm()
 {
-    apt install -y git make gcc picom rofi feh acpi libimlib2 xbacklight xorg xserver-xorg xinit libimlib2-dev libxinerama-dev xtrlock xclip maim
+    apt install -y dbus-x11 git make gcc picom rofi feh acpi libimlib2 xbacklight xorg xserver-xorg xinit libimlib2-dev libxinerama-dev xtrlock xclip maim
     git clone "https://github.com/timvnaarden/chadwm" --depth 1 ~/.config/chadwm
     cd ~/.config/chadwm/chadwm
     make install
